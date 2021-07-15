@@ -19,7 +19,7 @@ Base.@kwdef struct Options
     conditional_to_if::Bool = false
     normalize_line_endings::String = "auto"
     align_matrix::Bool = false
-    indent_module_body::Bool = false
+    indent_module_body::Bool = true
 end
 
 function needs_alignment(opts::Options)

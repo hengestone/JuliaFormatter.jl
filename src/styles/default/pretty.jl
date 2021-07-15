@@ -915,6 +915,7 @@ p_mutable(style::S, cst::CSTParser.EXPR, s::State) where {S<:AbstractStyle} =
 function p_module(ds::DefaultStyle, cst::CSTParser.EXPR, s::State)
     style = getstyle(ds)
     t = FST(ModuleN, cst, nspaces(s))
+    println(s.opts)
     add_node!(t, pretty(style, cst[1], s), s)
     add_node!(t, Whitespace(1), s)
     add_node!(t, pretty(style, cst[3], s), s, join_lines = true)
@@ -922,7 +923,13 @@ function p_module(ds::DefaultStyle, cst::CSTParser.EXPR, s::State)
         add_node!(t, Whitespace(1), s)
         add_node!(t, pretty(style, cst[5], s), s, join_lines = true)
     else
-        add_node!(t, pretty(style, cst[4], s), s, max_padding = 0)
+        if s.opts.indent_module_body
+            s.indent += s.opts.indent
+        end
+        add_node!(t, pretty(style, cst[4], s), s, max_padding = s.opts.indent)
+        if s.opts.indent_module_body
+            s.indent -= s.opts.indent
+        end
         add_node!(t, pretty(style, cst[5], s), s)
     end
     t
